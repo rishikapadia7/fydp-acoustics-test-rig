@@ -10,10 +10,10 @@ void setup() {
 
 void loop() {
   byte incomingByte1;
-  
+    
   if (Serial.available()) {
-    //delay(500);
     incomingByte1 = Serial.read(); //read incoming data
+    delay(100);
     Serial.println(incomingByte1,HEX); //print data
   }
 }
