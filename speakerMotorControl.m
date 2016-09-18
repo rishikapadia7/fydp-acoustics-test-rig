@@ -5,7 +5,7 @@ function [ ] = speakerMotorControl( s, motor_number, angle )
     if (motor_number >= 0) && (motor_number < 6)
         if (angle >= 0) && (angle <= 180)
             %smc,uint8,uint8
-            fprintf(s,'%s','smc');
+            fprintf(s,'%s',"smc");
             fwrite(s,motor_number,'uint8');
             fwrite(s,angle,'uint8');
         else
