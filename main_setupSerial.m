@@ -12,7 +12,7 @@ if length(coms) > 0
         %all connections are closed, open new one
         if (i == length(coms))
             s = serial('COM5');
-            set(s,'BaudRate',115200);
+            set(s,'BaudRate',BAUD_RATE);
             fopen(s);
         end
     end
@@ -43,7 +43,7 @@ fprintf('[success] serial setup.\n');
 %clear pending input bytes
 readbytes = get(s,'BytesAvailable');
 if(readbytes > 100)
-    fprintf('Warning, BytesAvailable=%d', readBytes);
+    fprintf('Warning, BytesAvailable=%d', readbytes);
 end
 while (readbytes > 0)
     readData=fscanf(s); %reads "Ready" signal from Arduino if available
@@ -68,4 +68,13 @@ for i=1:2 %read 2 lines of data
     validatestring(compString,readData);
 end
 
-fprintf('[success] serial validation.\n');
+% Let Arduino know that validation has completed successfully.
+pause(1);
+fwrite(s,SERIAL_ACK_VAL,'uint8');
+
+%wait for status message to arrive
+while(get(s,'BytesAvailable') < 4)
+end
+
+arduinoRetMsg = fgets(s); %gets either [success] or [failure]
+fprintf(arduinoRetMsg);
