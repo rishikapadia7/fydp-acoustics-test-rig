@@ -1,6 +1,9 @@
 #define BAUD_RATE 115200
 #define SERIAL_ACK_VAL 6
 
+//NOTE: When a serial connection is stopped and started again
+//The arduino resets and re-runs the setup() function.
+
 void setup() {
     // Open serial communications and wait for port to open:
     Serial.begin(BAUD_RATE);
@@ -12,39 +15,77 @@ void setup() {
 }
 
 void loop() {
-    delay(1000);
-    Serial.println("got to main loop().\n");
+    String cmd;
+
+    waitForSerialReceive();
+    
+    cmd = Serial.readString(); //read incoming data
+    cmd.trim();
+
+    //determine which command it is
+    if(cmd.equals("smc"))
+    {
+        speakerMotorControl();
+    }
+    else if(cmd.equals("so"))
+    {
+        speakerOutput();
+    }
+    else
+    {
+        Serial.println("[loop()] not a valid cmd = " + cmd);
+    }
+}
+
+void speakerMotorControl()
+{
+    //The next 2 bytes read on the serial interface are:
+    //<uint8 motor_number> <uint8 angle>
+    uint8_t motor_number;
+    uint8_t angle;
+    
+    Serial.println("Called speakerMotorControl().");
+
+    /*if (Serial.available()) 
+    {
+        motor_number = Serial.read();
+        angle = Serial.read();
+
+        //Adjust motor position
+        motors[motor_number].write(angle);
+        delay(100); //wait for motor to get there
+    }
+    */
+}
+
+void speakerOutput()
+{
+    Serial.println("Called speakerOutput().");
+    return;
 }
 
 void serialValidation()
 {
     //Complete initial handshake with Matlab to indicate send and receive works successfully
     //inital handshake is receiving uint16 of 0x01F4.  Little endian therefore F4 arrives first.
-    while(!Serial.available())
-    {
-        ; //wait for initial byte of F4 to arrive
-    }
+    
+    //wait for initial byte of F4 to arrive
+    waitForSerialReceive();
     
     byte incomingByte1;
     incomingByte1 = Serial.read(); //read incoming data
     Serial.println(incomingByte1,HEX); //print data
 
-    //Wait for byte 2
-    while(!Serial.available())
-    {
-        ; //wait for second byte of 01 to arrive
-    }
+    //wait for second byte of 01 to arrive
+    waitForSerialReceive();
 
     if (Serial.available()) {
         incomingByte1 = Serial.read(); //read incoming data
         Serial.println(incomingByte1,HEX); //print data
     }
 
-    //Wait for ack message
-    while(!Serial.available())
-    {
-        ; //wait for ack message to arrive as uint8
-    }
+    //wait for ack message to arrive as uint8
+    waitForSerialReceive();
 
     incomingByte1 = Serial.read(); //read incoming data
     if(incomingByte1 == SERIAL_ACK_VAL)
@@ -55,5 +96,13 @@ void serialValidation()
     {
         Serial.println("[failure] serial validation.");
         Serial.println("Wanted " + String(SERIAL_ACK_VAL, DEC) + ", got: " + String(incomingByte1, DEC));
+    }
+}
+
+void waitForSerialReceive()
+{
+    while(!Serial.available())
+    {
+        ;
     }
 }

@@ -76,6 +76,7 @@ fwrite(s,SERIAL_ACK_VAL,'uint8');
 while(get(s,'BytesAvailable') < 4)
 end
 
+arduinoRetMsg = sprintf('[failure] serial validation, fgets did not work.');
 arduinoRetMsg = fgets(s); %gets either [success] or [failure]
 fprintf(arduinoRetMsg);
 
