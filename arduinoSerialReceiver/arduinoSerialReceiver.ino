@@ -8,6 +8,16 @@ void setup() {
       ; // wait for serial port to connect.
     }
 
+    serialValidation();
+}
+
+void loop() {
+    delay(1000);
+    Serial.println("got to main loop().\n");
+}
+
+void serialValidation()
+{
     //Complete initial handshake with Matlab to indicate send and receive works successfully
     //inital handshake is receiving uint16 of 0x01F4.  Little endian therefore F4 arrives first.
     while(!Serial.available())
@@ -46,9 +56,4 @@ void setup() {
         Serial.println("[failure] serial validation.");
         Serial.println("Wanted " + String(SERIAL_ACK_VAL, DEC) + ", got: " + String(incomingByte1, DEC));
     }
-}
-
-void loop() {
-    delay(1000);
-    Serial.println("got to main loop().\n");
 }

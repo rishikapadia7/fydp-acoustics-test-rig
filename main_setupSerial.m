@@ -38,7 +38,7 @@ end
 fprintf('[success] serial setup.\n');
 %% validates both send and receive using serial object s.
 % Requires: s
-% Outputs: {}
+% Outputs: s (unchanged which has been validated}
 
 %clear pending input bytes
 readbytes = get(s,'BytesAvailable');
@@ -78,3 +78,9 @@ end
 
 arduinoRetMsg = fgets(s); %gets either [success] or [failure]
 fprintf(arduinoRetMsg);
+
+%see if there is any other trailing debug info
+if(get(s,'BytesAvailable') > 0)
+    arduinoRetMsg = fgets(s);
+    fprintf(arduinoRetMsg);
+end

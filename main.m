@@ -4,9 +4,13 @@ main_includes;
 main_setupSerial;
 % returns: s variable is a validated serial connection object
 
+%%TODO: the current serial setup only runs when Arduino is first flashed
+%%need to change Arduino code so that it can run at any time
+
+
 
 
 %% Close serial connection
-%% fclose(s);
-%% delete(s);
-%% clear;
+fclose(s);
+delete(s);
+clear;
