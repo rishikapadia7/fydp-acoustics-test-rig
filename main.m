@@ -39,6 +39,17 @@ arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
 arduinoRetMsg = fgets(s); %gets either [success] or [failure]
 fprintf(arduinoRetMsg);
 
+%write mr
+pause(1);
+cmd = sprintf('mr');
+fprintf(s,cmd);
+
+%check response
+pause(1);
+arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
+arduinoRetMsg = fgets(s); %gets either [success] or [failure]
+fprintf(arduinoRetMsg);
+
 
 
 

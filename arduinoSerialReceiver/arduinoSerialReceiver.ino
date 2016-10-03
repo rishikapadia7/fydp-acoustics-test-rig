@@ -19,7 +19,7 @@ void loop() {
 
     waitForSerialReceive();
     
-    cmd = Serial.readString(); //read incoming data
+    cmd = Serial.readStringUntil('\n'); //read incoming data
     cmd.trim();
 
     //determine which command it is
@@ -30,6 +30,10 @@ void loop() {
     else if(cmd.equals("so"))
     {
         speakerOutput();
+    }
+    else if(cmd.equals("mr"))
+    {
+        micRobot();
     }
     else
     {
@@ -61,6 +65,12 @@ void speakerMotorControl()
 void speakerOutput()
 {
     Serial.println("Called speakerOutput().");
+    return;
+}
+
+void micRobot()
+{
+    Serial.println("Called micRobot().");
     return;
 }
 
