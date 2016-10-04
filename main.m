@@ -18,34 +18,25 @@ main_setupSerial;
 % returns: s variable is a validated serial connection object
 
 %write smc
-pause(1);
-cmd = sprintf('smc');
-fprintf(s,cmd);
+serial_write_line(s,'smc');
 
 %check response
-pause(1);
 arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
 arduinoRetMsg = fgets(s); %gets either [success] or [failure]
 fprintf(arduinoRetMsg);
 
 %write so
-pause(1);
-cmd = sprintf('so');
-fprintf(s,cmd);
+serial_write_line(s,'so');
 
 %check response
-pause(1);
 arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
 arduinoRetMsg = fgets(s); %gets either [success] or [failure]
 fprintf(arduinoRetMsg);
 
 %write mr
-pause(1);
-cmd = sprintf('mr');
-fprintf(s,cmd);
+serial_write_line(s,'mr');
 
 %check response
-pause(1);
 arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
 arduinoRetMsg = fgets(s); %gets either [success] or [failure]
 fprintf(arduinoRetMsg);

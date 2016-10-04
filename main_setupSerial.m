@@ -51,9 +51,9 @@ while (readbytes > 0)
     readbytes = get(s,'BytesAvailable');
 end
 
-pause(1);   %must have ths pause or connection intermittent!!!
-            %turns out reading and writing need breaks from each other!
-fwrite(s,500,'uint16') %write data is 500d == 0x01F4
+%must have ths pause (only right here) or connection intermittent!!!
+pause(1);
+serial_write_data(s,500,'uint16'); %write data is 500d == 0x01F4
 
 for i=1:2 %read 2 lines of data
     readData=fscanf(s); %first iteration is F4, second is 1 (little endian)
@@ -69,8 +69,7 @@ for i=1:2 %read 2 lines of data
 end
 
 % Let Arduino know that validation has completed successfully.
-pause(1);
-fwrite(s,SERIAL_ACK_VAL,'uint8');
+serial_write_data(s,SERIAL_ACK_VAL,'uint8');
 
 %wait for status message to arrive
 while(get(s,'BytesAvailable') < 4)
