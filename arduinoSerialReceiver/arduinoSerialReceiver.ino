@@ -23,6 +23,7 @@ void loop() {
     cmd.trim();
 
     //determine which command it is
+    //note: after calling the subroutine, the arguments are parsed
     if(cmd.equals("smc"))
     {
         speakerMotorControl();
@@ -44,22 +45,26 @@ void loop() {
 void speakerMotorControl()
 {
     //The next 2 bytes read on the serial interface are:
-    //<uint8 motor_number> <uint8 angle>
-    uint8_t motor_number;
+    //<uint8 motorNumber> <uint8 angle>
+    uint8_t motorNumber;
     uint8_t angle;
     
     Serial.println("Called speakerMotorControl().");
 
-    /*if (Serial.available()) 
-    {
-        motor_number = Serial.read();
-        angle = Serial.read();
+    waitForSerialReceive();
+    motorNumber = Serial.read();
 
-        //Adjust motor position
-        motors[motor_number].write(angle);
-        delay(100); //wait for motor to get there
-    }
+    waitForSerialReceive();
+    angle = Serial.read();
+
+    Serial.println("motorNumber " + String(motorNumber, DEC) + " angle " + String(angle, DEC));
+
+    /*
+    //Adjust motor position
+    motors[motorNumber].write(angle);
+    delay(100); //wait for motor to get there
     */
+
 }
 
 void speakerOutput()

@@ -17,31 +17,11 @@ main_includes;
 main_setupSerial;
 % returns: s variable is a validated serial connection object
 
-%write smc
-serial_write_line(s,'smc');
+speakerOutput;
 
-%check response
-arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
-arduinoRetMsg = fgets(s); %gets either [success] or [failure]
-fprintf(arduinoRetMsg);
+micRobot;
 
-%write so
-serial_write_line(s,'so');
-
-%check response
-arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
-arduinoRetMsg = fgets(s); %gets either [success] or [failure]
-fprintf(arduinoRetMsg);
-
-%write mr
-serial_write_line(s,'mr');
-
-%check response
-arduinoRetMsg = sprintf('[failure] main, fgets did not work.');
-arduinoRetMsg = fgets(s); %gets either [success] or [failure]
-fprintf(arduinoRetMsg);
-
-
+speaker_motor_control(s,0,30);
 
 
 %% Close serial connection
