@@ -1,6 +1,13 @@
 #define BAUD_RATE 115200
 #define SERIAL_ACK_VAL 6
 
+#define MOTOR_PIN_OFFSET 9 //what pin on Arduino corresponds to motor 0
+#define MOTOR_COUNT 1
+
+#include <Servo.h>
+
+Servo motors[MOTOR_COUNT];
+
 //NOTE: When a serial connection is stopped and started again
 //The arduino resets and re-runs the setup() function.
 
@@ -12,6 +19,8 @@ void setup() {
     }
 
     serialValidation();
+
+    setupMotors();
 }
 
 void loop() {
@@ -59,12 +68,9 @@ void speakerMotorControl()
 
     Serial.println("motorNumber " + String(motorNumber, DEC) + " angle " + String(angle, DEC));
 
-    /*
     //Adjust motor position
     motors[motorNumber].write(angle);
     delay(100); //wait for motor to get there
-    */
-
 }
 
 void speakerOutput()
@@ -119,5 +125,14 @@ void waitForSerialReceive()
     while(!Serial.available())
     {
         ;
+    }
+}
+
+void setupMotors()
+{
+    //Setup (servo) motors on their corresponding pins
+    for(int i = 0; i < MOTOR_COUNT; i++)
+    {
+        motors[i].attach(i + MOTOR_PIN_OFFSET);
     }
 }

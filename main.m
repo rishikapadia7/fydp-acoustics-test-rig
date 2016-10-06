@@ -17,12 +17,15 @@ main_includes;
 main_setupSerial;
 % returns: s variable is a validated serial connection object
 
-speakerOutput;
-
-micRobot;
-
 speaker_motor_control(s,0,30);
-
+pause(1);
+speaker_motor_control(s,0,40);
+pause(1);
+speaker_motor_control(s,0,50);
+pause(1);
+speaker_motor_control(s,0,90);
+pause(1);
+speaker_motor_control(s,0,0);
 
 %% Close serial connection
 fclose(s);
