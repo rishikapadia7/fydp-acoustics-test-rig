@@ -66,11 +66,11 @@ void speakerMotorControl()
     waitForSerialReceive();
     angle = Serial.read();
 
-    Serial.println("motorNumber " + String(motorNumber, DEC) + " angle " + String(angle, DEC));
-
     //Adjust motor position
     motors[motorNumber].write(angle);
     delay(100); //wait for motor to get there
+
+    Serial.println("motorNumber " + String(motorNumber, DEC) + " angle " + String(angle, DEC));
 }
 
 void speakerOutput()

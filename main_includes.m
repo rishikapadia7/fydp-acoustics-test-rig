@@ -1,5 +1,6 @@
 %Since no header files in matlab, this will essentially serve for constants
 BAUD_RATE = 115200;
+COM_PORT = 'COM3';
 SERIAL_ACK_VAL = 6;
 
 %Define print statement debug levels

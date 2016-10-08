@@ -11,14 +11,14 @@ if length(coms) > 0
         end
         %all connections are closed, open new one
         if (i == length(coms))
-            s = serial('COM5');
+            s = serial(COM_PORT);
             set(s,'BaudRate',BAUD_RATE);
             fopen(s);
         end
     end
 else
     %open first new connection
-    s = serial('COM5');
+    s = serial(COM_PORT);
     set(s,'BaudRate',115200);
     fopen(s);
 end

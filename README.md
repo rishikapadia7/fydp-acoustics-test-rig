@@ -34,7 +34,7 @@ mr,x,y,z
 
 ## Matlab Naming Conventions Used
 
-function_names_with_parameters, FunctionNamesWithoutParameters, variableNames, sub_moduleNames
+function_names_with_parameters, variableNames, sub_moduleNamesOrFunctionsWithoutParameters
 
 ## Arduino .ino naming conventions
 
