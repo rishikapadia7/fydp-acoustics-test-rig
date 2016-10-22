@@ -7,13 +7,13 @@ via serial port.
 Note: multi-byte data is sent with LSB first then towards MSB. (little endian)
 
 
-### Speaker Motor Control
-speaker_motor_control(uint8 motor_number, uint8 angle)
+### Set Servo Angle
+set_servo_angle(uint8 pin_number, uint8 angle)
 
 where angle is measured from that motors 0 degree state
-and is limited to 90 degrees.
+and is limited to 180 degrees (usually expected to < 90 degrees).
 
-smc,motor_number,angle
+ssa,pin_number,angle
 
 
 ### Speaker Output
@@ -28,9 +28,11 @@ so,speaker_number,output_val
 ### Mic Robot
 mic_robot(uint16 x, uint16 y, uint16 z)
 
-NOTE: x, y, and z are measured in centimeters relative to origin of acoustic platform.
+NOTE: x, y, and z are measured in centimeters relative to origin of acoustic platform.  This will actually be implemented in Matlab, and the Arduino code will be minimal so that it only processes the pin number, continuous servo angle for direction/speed, period of time to spin in ms.
 
-mr,x,y,z
+### Rotate Continuous Servo
+
+rcs, motorNumber, angleStart, angleStop, duration
 
 ## Matlab Naming Conventions Used
 
