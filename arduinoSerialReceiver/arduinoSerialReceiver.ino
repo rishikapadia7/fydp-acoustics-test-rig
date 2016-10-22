@@ -1,12 +1,10 @@
 #define BAUD_RATE 115200
 #define SERIAL_ACK_VAL 6
-
-#define MOTOR_PIN_OFFSET 9 //what pin on Arduino corresponds to motor 0
-#define MOTOR_COUNT 1
+#define PWM_PIN_COUNT 4
 
 #include <Servo.h>
 
-Servo motors[MOTOR_COUNT];
+Servo motors[PWM_PIN_COUNT];
 
 //NOTE: When a serial connection is stopped and started again
 //The arduino resets and re-runs the setup() function.
@@ -33,17 +31,17 @@ void loop() {
 
     //determine which command it is
     //note: after calling the subroutine, the arguments are parsed
-    if(cmd.equals("smc"))
+    if(cmd.equals("ssa"))
     {
-        speakerMotorControl();
+        setServoAngle();
     }
     else if(cmd.equals("so"))
     {
         speakerOutput();
     }
-    else if(cmd.equals("mr"))
+    else if(cmd.equals("rcs"))
     {
-        micRobot();
+        rotateContinuousServo();
     }
     else
     {
@@ -51,14 +49,14 @@ void loop() {
     }
 }
 
-void speakerMotorControl()
+void setServoAngle()
 {
     //The next 2 bytes read on the serial interface are:
     //<uint8 motorNumber> <uint8 angle>
     uint8_t motorNumber;
     uint8_t angle;
     
-    Serial.println("Called speakerMotorControl().");
+    Serial.println("Called setServoAngle().");
 
     waitForSerialReceive();
     motorNumber = Serial.read();
@@ -73,17 +71,65 @@ void speakerMotorControl()
     Serial.println("motorNumber " + String(motorNumber, DEC) + " angle " + String(angle, DEC));
 }
 
+//Rotates the continuous servo motor for the specified duration
+void rotateContinuousServo()
+{
+    //<motorNumber> <angleStart> <angleStop> <duration>
+    //NOTE: the angleStart specifies the direction and speed
+    //angleStop should be the angle at which the motor is stationary
+    //duration is in milliseconds
+    Serial.println("Called rotateContinuousServo().");
+    uint8_t motorNumber, angleStart, angleStop;
+    uint16_t durationByte1, durationByte2, duration; //in milliseconds
+    
+    //TODO: test properly on duration and time it on both platforms
+
+    waitForSerialReceive();
+    motorNumber = Serial.read();
+
+    waitForSerialReceive();
+    angleStart = Serial.read();
+
+    waitForSerialReceive();
+    angleStop = Serial.read();
+
+    //Get both bytes of duration which was sent as uint16
+    waitForSerialReceive();
+    durationByte1 = Serial.read();
+
+    waitForSerialReceive();
+    durationByte2 = Serial.read();
+
+    //Reconstruct duration (little endian), therefore LSB received first
+    duration = durationByte1;
+    duration |= (durationByte2 << 8);
+
+    Serial.println("rotateContinuousServo called with motorNumber = " + String(motorNumber, DEC)
+        + " angleStart = " + String(angleStart, DEC)
+        + " angleStop = " + String(angleStop, DEC)
+        + " duration = " + String(duration, DEC)
+    );
+
+    //Cause the motor to begin rotation
+    motors[motorNumber].write(angleStart);
+
+    //Continue the rotation for duration milliseconds
+    delay(duration);
+
+    //Stop the rotation
+    motors[motorNumber].write(angleStop);
+
+    Serial.println("[success] rotateContinuousServo.");
+
+}
+
 void speakerOutput()
 {
     Serial.println("Called speakerOutput().");
     return;
 }
 
-void micRobot()
-{
-    Serial.println("Called micRobot().");
-    return;
-}
+
 
 void serialValidation()
 {
@@ -100,10 +146,8 @@ void serialValidation()
     //wait for second byte of 01 to arrive
     waitForSerialReceive();
 
-    if (Serial.available()) {
-        incomingByte1 = Serial.read(); //read incoming data
-        Serial.println(incomingByte1,HEX); //print data
-    }
+    incomingByte1 = Serial.read(); //read incoming data
+    Serial.println(incomingByte1,HEX); //print data
 
     //wait for ack message to arrive as uint8
     waitForSerialReceive();
@@ -128,11 +172,26 @@ void waitForSerialReceive()
     }
 }
 
+//This will setup both servos and continuous servos
+//The setup for both of these are identical and are motors of the same "Servo" type
+//NOTE: first motors are continuous servo motors since they are the least likely to change
 void setupMotors()
 {
-    //Setup (servo) motors on their corresponding pins
-    for(int i = 0; i < MOTOR_COUNT; i++)
+    uint8_t motorNumber, pinNumber;
+
+    //i is not used in the loop
+    for(int i = 0; i < PWM_PIN_COUNT; i++)
     {
-        motors[i].attach(i + MOTOR_PIN_OFFSET);
+        //Retrieve the motor number and which pin it is using
+        //wait for motor number
+        waitForSerialReceive();
+        motorNumber = Serial.read();
+        
+        waitForSerialReceive();
+        pinNumber = Serial.read();
+
+        motors[motorNumber].attach(pinNumber);
     }
+
+    Serial.println("[success] setupMotors.");
 }

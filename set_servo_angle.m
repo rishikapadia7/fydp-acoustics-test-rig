@@ -1,5 +1,5 @@
-function [ ] = speaker_motor_control( s, motorNumber, angle )
-% Turns speaker(s) mounted to motor motorNumber by angle degrees
+function [ ] = set_servo_angle( s, motorNumber, angle )
+% Turns servo motor motorNumber by angle degrees
     % s is a validated serial port object
     %angle specifies position of motor, not degrees to rotate by
     %Calls Arduino in following sequence: smc,motor_number,angle
@@ -9,34 +9,34 @@ function [ ] = speaker_motor_control( s, motorNumber, angle )
     try
         if(angle >= 0 && angle <= 90)
             if(DBG <= DBG_INFO)
-                fprintf('[speaker_motor_control] angle valid.\n');
+                fprintf('[set_servo_angle] angle valid.\n');
             end
         else
-            fprintf('[speaker_motor_control] angle %d invalid.\n', angle);
+            fprintf('[set_servo_angle] angle %d invalid.\n', angle);
             return;
         end
     catch
-        fprintf('[speaker_motor_control] angle not a valid number.\n');
+        fprintf('[set_servo_angle] angle not a valid number.\n');
         return;
     end
     
     % validate motorNumber
     try
-        if(motorNumber >= 0 && motorNumber < SPEAKER_MOTOR_COUNT)
+        if(motorNumber >= 1 && motorNumber <= PWM_PIN_COUNT)
             if(DBG <= DBG_INFO)
-                fprintf('[speaker_motor_control] motorNumber valid.\n');
+                fprintf('[set_servo_angle] motorNumber valid.\n');
             end
         else
-            fprintf('[speaker_motor_control] motorNumber %d invalid.\n', motorNumber);
+            fprintf('[set_servo_angle] motorNumber %d invalid.\n', motorNumber);
             return;
         end
     catch
-        fprintf('[speaker_motor_control] motorNumber not a valid number.\n');
+        fprintf('[set_servo_angle] motorNumber not a valid number.\n');
         return;
     end
     
     %write smc
-    serial_write_line(s,'smc');
+    serial_write_line(s,'ssa');
 
     %check response
     fprintf(fgets(s));

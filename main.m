@@ -12,20 +12,17 @@ main_includes;
 %The arduino resets and re-runs the setup() function.
 %thus be careful about loss of state in Arduino
 %http://forum.arduino.cc/index.php?topic=42691.0
-%Tested on Arduino Duemilanove
+%Tested on Arduino Duemilanove and Arduino Uno R3
 
 main_setupSerial;
 % returns: s variable is a validated serial connection object
 
-speaker_motor_control(s,0,30);
-pause(1);
-speaker_motor_control(s,0,40);
-pause(1);
-speaker_motor_control(s,0,50);
-pause(1);
-speaker_motor_control(s,0,90);
-pause(1);
-speaker_motor_control(s,0,0);
+main_setupMotors;
+
+%% Test continuous servos
+rotate_forward(s,MOTOR_X,2000);
+rotate_reverse(s,MOTOR_X,1000);
+
 
 %% Close serial connection
 fclose(s);

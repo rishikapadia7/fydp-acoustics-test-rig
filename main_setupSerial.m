@@ -19,7 +19,7 @@ if length(coms) > 0
 else
     %open first new connection
     s = serial(COM_PORT);
-    set(s,'BaudRate',115200);
+    set(s,'BaudRate',BAUD_RATE);
     fopen(s);
 end
 set(s,'Timeout',1); %read/write timeout in seconds
